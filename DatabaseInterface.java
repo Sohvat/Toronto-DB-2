@@ -98,7 +98,7 @@ private static String selectNeighbourhood() {
         System.out.printf("%2d. %s\n", (i+1), neighbourhoods.get(i));
     }
     System.out.println(" 0. Go back to region selection");
-    System.out.print("Select neighbourhood number: ");
+    System.out.print("\nSelect neighbourhood number: ");
     
     try {
         int hoodChoice = Integer.parseInt(localScanner.nextLine().trim());
@@ -224,7 +224,7 @@ private static String selectNeighbourhood() {
                         String neighbourhood1 = selectNeighbourhood();
 
                         if (neighbourhood1 != null) {
-                            System.out.println("Fetching requested info....");
+                            System.out.println("\n \n Fetching requested info....\n \n");
                             db.showCrimesInNeighbourhood(neighbourhood1);
                         }
                         break;
@@ -232,7 +232,7 @@ private static String selectNeighbourhood() {
                     case "2":
                         String neighbourhood2 = selectNeighbourhood();
                         if (neighbourhood2 != null) {
-                            System.out.println("Fetching requested info....");
+                            System.out.println("\n \n Fetching requested info....\n \n");
                             db.browseLocalListings(neighbourhood2);
                         }
                         break;
@@ -240,23 +240,22 @@ private static String selectNeighbourhood() {
                     case "3":
                         String neighbourhood3 = selectNeighbourhood();
                         if (neighbourhood3 != null) {
-
                             System.out.print("Sort (high/low): ");
-                            System.out.println("Fetching requested info....");
                             String order = localScanner.nextLine().trim();
+                            System.out.println("\n \nFetching requested info....\n \n");
                             db.rankListingsByPrice(neighbourhood3, order);;
                         }
                         break;
                         
                     case "4":
-                        System.out.println("Fetching requested info....");
+                        System.out.println("\n \n Fetching requested info....\n \n");
                         db.countListingsPerNeighbourhood();
                         break;
                         
                     case "5":
                         String neighbourhood5 = selectNeighbourhood();
                         if (neighbourhood5 != null) {
-                            System.out.println("Fetching requested info....");
+                            System.out.println("\n \n Fetching requested info....\n \n");
                             db.getTopListingReviews(neighbourhood5);;
                         }
                         break;
@@ -279,6 +278,8 @@ private static String selectNeighbourhood() {
             System.out.println("3. Crime vs tourism analysis");
             System.out.println("4. Attraction safety check");
             System.out.println("5. Repeat offender tracking");
+            System.out.println("6. Criminal Category committing most crimes");
+            System.out.println("7. Active criminals in neighbourhoods with attractions");
             System.out.println("0. Back to main menu");
             System.out.print("Choice (1-5, 0 to exit): ");
             
@@ -287,10 +288,10 @@ private static String selectNeighbourhood() {
             switch (choice) {
                 case "1":
                     // Query 5: Top N neighborhoods with most crimes
-                    System.out.print("Show top N areas: ");
-                    System.out.println("Fetching requested info....");
+                    System.out.print("Please enter the number of rows to display: ");
                     try {
                         int limit = Integer.parseInt(localScanner.nextLine().trim());
+                        System.out.println("\n \n Fetching requested info....\n \n");
                         db.getHighCrimeNeighbourhoods(limit);
 
                     } catch (NumberFormatException e) {
@@ -300,19 +301,19 @@ private static String selectNeighbourhood() {
                     
                 case "2":
                     // Query 7: Crime handled per police station
-                    System.out.println("Fetching requested info....");
+                    System.out.println("\n \n Fetching requested info....\n \n");
                     db.getPoliceStationCoverage();
                     break;
                     
                 case "3":
                     // Query 9: Crime rate vs. Airbnb listings analysis
-                    System.out.println("Fetching requested info....");
+                    System.out.println("\n \n Fetching requested info....\n \n");
                     db.analyzeCrimeVsTourism();
                     break;
                     
                 case "4":
                     // Query 10: Attractions vs. crime comparisons - needs attraction name
-                    System.out.println("Fetching requested info....");
+                    System.out.println("\n \n Fetching requested info....\n \n");
 					db.displayAllAttractions();
                     System.out.print("Enter attraction name: ");
                     String attraction = localScanner.nextLine().trim();
@@ -321,8 +322,20 @@ private static String selectNeighbourhood() {
                     
                 case "5":
                     // Query 13: Repeat offenders vs attractions
-                    System.out.println("Fetching requested info....");
+                    System.out.println("\n \n Fetching requested info....\n \n");
                     db.trackRepeatOffenders();
+                    break;
+                
+                case "6":
+                    // Query 21: Criminal category committing most crimes
+                    System.out.println("\n \n Fetching requested info....\n \n");
+                    db.criminalCategoryAnalysis();
+                    break;
+
+                case "7":
+                    // Query 22: Active criminals in neighbourhoods with attractions 
+                    System.out.println("\n \n Fetching requested info....\n \n");
+                    db.criminalsNearAttractions();
                     break;
                     
                 case "0":
@@ -348,6 +361,11 @@ private static String selectNeighbourhood() {
             System.out.println("3. Amenity-pricing impact");
             System.out.println("4. Host-guest overlap");
             System.out.println("5. Review-Booking analysis");
+            System.out.println("6. Unbooked Listings");
+            System.out.println("7. Busiest Booking months");
+            System.out.println("8. Most booked property type");
+            System.out.println("9. Most expensive property type");
+            System.out.println("10. Cheapest V/s Most expensive listing type");
             System.out.println("0. Back to main menu");
             System.out.print("Choice (1-5, 0 to exit): ");
             
@@ -357,7 +375,7 @@ private static String selectNeighbourhood() {
                 case "1":
                     // Query 2: List all associated amenities for a specific Airbnb listing
                     // System.out.print("Enter listing ID: ");
-                    // System.out.println("Fetching requested info....");
+                    // System.out.println("\n \n Fetching requested info....\n \n");
                     // try {
                     //     int id = Integer.parseInt(localScanner.nextLine().trim());
                     //     db.getListingAmenities(id);
@@ -368,26 +386,64 @@ private static String selectNeighbourhood() {
                     
                 case "2":
                     // Query 14: Amenities vs booking analysis
-                    System.out.println("Fetching requested info....");
+                    System.out.println("\n \n Fetching requested info....\n \n");
                     db.analyzeAmenityPopularity();
                     break;
                     
                 case "3":
-                    // Query 15: Amenities vs pricing analysis
-                    System.out.println("Fetching requested info....");
+                    //// Query 15: Amenities vs pricing analysis
+                    System.out.println("\n \n Fetching requested info....\n \n");
                     db.analyzeAmenityPricing();
                     break;
                     
                 case "4":
                     // Query 16: Host who are also guests
-                    System.out.println("Fetching requested info....");
+                    System.out.println("\n \n Fetching requested info....\n \n");
                     db.findHostGuestOverlap();
                     break;
                     
                 case "5":
                     // Query 17: Reviews vs. booking analysis
-                    System.out.println("Fetching requested info....");
+                    System.out.println("\n \n Fetching requested info....\n \n");
                     db.analyzeReviewImpact();
+                    break;
+
+                case "6":
+                    // Query 18:Unbooked listings
+                    System.out.println("\n \n Fetching requested info....\n \n");
+                    db.unbookedListings();
+                    break;
+                    
+                case "7":
+                    // Query 23: Busiest Booking month
+                    System.out.println("\n \n Fetching requested info....\n \n");
+                    db.busiestBookingMonth();
+                    break;
+                    
+                case "8":
+                    // Query 24: most expensive property type
+                    System.out.println("\n \n Fetching requested info....\n \n");
+                    db.propertyTypePricesByNeighbourhood();
+                    break;
+                    
+                case "9":
+                    /// Query 25: most booked property type
+                    System.out.print("\nEnter how many would you like to see: ");
+                    try {
+                        int limit = Integer.parseInt(localScanner.nextLine().trim());
+                        System.out.println("\n \n Fetching requested info....\n \n");
+                        db.mostBookedPropertyTypes(limit);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Please enter a valid ID");
+                    }
+                    System.out.println("\n \n Fetching requested info....\n \n");
+                   
+                    break;
+                    
+                case "10":
+                    // Query 26: Price range by property type
+                    System.out.println("\n \n Fetching requested info....\n \n");
+                    db.priceRangeByPropertyType();
                     break;
                     
                 case "0":
@@ -419,19 +475,19 @@ private static String selectNeighbourhood() {
             switch (choice) {
                 case "1":
                     // Query 8: Guests with both Airbnb & attraction visits
-                    System.out.println("Fetching requested info....");
+                    System.out.println("\n \n Fetching requested info....\n \n");
                     db.trackGuestAttractionActivity();
                     break;
                     
                 case "2":
                     // Query 11: Attractions vs. Airbnb prices
-                    System.out.println("Fetching requested info....");
+                    System.out.println("\n \n Fetching requested info....\n \n");
                     db.analyzeAttractionImpactOnPrices();
                     break;
                     
                 case "3":
                     // Query 20: Most visited attractions by guests
-                    System.out.println("Fetching requested info....");
+                    System.out.println("\n \n Fetching requested info....\n \n");
                     db.findMostVisitedAttractions();
                     break;
                     
@@ -460,8 +516,8 @@ private static String selectNeighbourhood() {
             String choice = localScanner.nextLine().trim();
             
             if (choice.equals("1")) {
-                // Query 12: Crime, attractions, and police stations analysis
-                System.out.println("Fetching requested info....");
+                /// Query 12: Crime, attractions, and police stations analysis
+                System.out.println("\n \n Fetching requested info....\n \n");
                 db.generateAreaSafetyProfiles();
             } else if (choice.equals("0")) {
                 stayInCategory = false;
@@ -477,7 +533,7 @@ private static String selectNeighbourhood() {
         try {
             // Execute SQL files sequentially
             System.out.println("Creating Toronto database tables...");
-            // Add your actual SQL file execution here
+            //// Add your actual SQL file execution here
             System.out.println("Database deployment completed.");
         } catch (Exception e) {
             System.out.println("Deployment error: " + e.getMessage());
@@ -487,7 +543,7 @@ private static String selectNeighbourhood() {
     private static void reloadData() {
         try {
             System.out.println("Loading data...");
-            /// po.loadConfigAndPopulate();
+            ///// po.loadConfigAndPopulate();
             System.out.println("Data reload completed.");
         } catch (Exception e) {
             System.out.println("Data loading error: " + e.getMessage());

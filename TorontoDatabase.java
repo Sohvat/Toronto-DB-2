@@ -75,7 +75,7 @@ public class TorontoDatabase {
     // 1) Crimes in a specific neighbourhood (by ID) 
     public void showCrimesInNeighbourhood(int neighbourhoodId) {
         String sql = """
-                SELECT c.*
+                SELECT TOP 100 c.*
                 FROM crimes c
                 JOIN neighbourhoods n ON c.neighbourhood_id = n.neighbourhood_id
                 WHERE n.neighbourhood_id = ?;
@@ -390,10 +390,6 @@ public class TorontoDatabase {
         }
     }
 
-    // Keep original method name for backward compatibility
-    public void crimesPerPoliceStation() {
-        getPoliceStationCoverage();
-    }
 
     // 8) Guests who stayed AND visited attractions 
     public void trackGuestAttractionActivity() {
@@ -762,10 +758,7 @@ public void showAttractionsWithSafetySummary() {
         }
     }
 
-    // Keep original method name for backward compatibility
-    public void attractionsVsPrices() {
-        analyzeAttractionImpactOnPrices();
-    }
+    
 
     // 12) Attractions, crimes, police stations per neighbourhood - Renamed to match DatabaseInterface
     public void generateAreaSafetyProfiles() {
@@ -801,11 +794,6 @@ public void showAttractionsWithSafetySummary() {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    // Keep original method name for backward compatibility
-    public void neighbourhoodSafetyInfrastructure() {
-        generateAreaSafetyProfiles();
     }
 
     // 14) Amenities vs bookings per listing
@@ -935,7 +923,7 @@ public void showAttractionsWithSafetySummary() {
                     resultSet.getString("name"),
                     resultSet.getDouble("review_scores_value"),
                     resultSet.getInt("num_reviews"),
-                    resultSet.getInt("num reviews"));
+                    resultSet.getInt("num_bookings"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -950,14 +938,14 @@ public void showAttractionsWithSafetySummary() {
     // 18) Listings never booked
     public void unbookedListings() {
         String sql = """
-                SELECT l.listing_id, l.name,
+                SELECT TOP 150 l.listing_id, l.name,
                        h.host_name,
                        h.host_identity_verified,
                        h.host_since
                 FROM listings l
                 JOIN hosts h ON l.host_id = h.host_id
                 WHERE NOT EXISTS (
-                    SELECT 1 FROM guests_book_listings gb 
+                    SELECT 1 FROM guest_book_listings gb 
                     WHERE gb.listing_id = l.listing_id
                 );
                 """;
@@ -1017,12 +1005,7 @@ public void showAttractionsWithSafetySummary() {
         }
     }
 
-    // Keep original method name for backward compatibility
-    public void mobileCriminals() {
-        trackRepeatOffenders();
-    }
-
-    // 20) Most visited attractions by guests - Renamed to match DatabaseInterface
+    // 20) Most visited attractions by guests 
     public void findMostVisitedAttractions() {
         String sql = """
                 SELECT TOP 10
@@ -1064,12 +1047,11 @@ public void showAttractionsWithSafetySummary() {
                 SELECT 
                     cr.gender,
                     cr.age_group,
-                    cr.number_of_prior_convictions,
                     COUNT(c.crime_id) AS total_crimes
                 FROM criminals cr
                 JOIN crimes c 
                     ON cr.criminal_id = c.criminal_id
-                GROUP BY cr.gender, cr.age_group, cr.number_of_prior_convictions
+                GROUP BY cr.gender, cr.age_group
                 ORDER BY total_crimes DESC;
                 """;
 
@@ -1077,15 +1059,14 @@ public void showAttractionsWithSafetySummary() {
              ResultSet resultSet = statement.executeQuery()) {
             
             System.out.println("Criminal Category Analysis:");
-            System.out.printf("%-10s %-15s %-25s %-15s%n", 
-                "Gender", "Age Group", "Prior Convictions", "Total Crimes");
-            System.out.println("----------------------------------------------------------------");
+            System.out.printf("%-10s %-15s %-25s %n", 
+                "Gender", "Age Group", "Total Crimes");
+            System.out.println("----------------------------------------------");
             
             while (resultSet.next()) {
-                System.out.printf("%-10s %-15s %-25d %-15d%n",
+                System.out.printf("%-10s %-15s %-25d %n",
                     resultSet.getString("gender"),
                     resultSet.getString("age_group"),
-                    resultSet.getInt("number_of_prior_convictions"),
                     resultSet.getInt("total_crimes"));
             }
         } catch (SQLException e) {
@@ -1134,10 +1115,10 @@ public void showAttractionsWithSafetySummary() {
     // 23) Busiest booking month
     public void busiestBookingMonth() {
         String sql = """
-                SELECT 
+                SELECT DISTINCT TOP 3
                     MONTH(booking_date) AS month,
                     COUNT(*) AS total_bookings
-                FROM guests_book_listings
+                FROM guest_book_listings
                 GROUP BY MONTH(booking_date)
                 ORDER BY total_bookings DESC;
                 """;
@@ -1150,8 +1131,8 @@ public void showAttractionsWithSafetySummary() {
             System.out.println("----------------------------");
             
             while (resultSet.next()) {
-                System.out.printf("%-10d %-15d%n",
-                    resultSet.getInt("month"),
+                System.out.printf("%-15s %-15d%n",
+                    monthMapper(resultSet.getInt("month")),
                     resultSet.getInt("total_bookings"));
             }
         } catch (SQLException e) {
@@ -1159,30 +1140,61 @@ public void showAttractionsWithSafetySummary() {
         }
     }
 
-    // 24) Most expensive property type in each neighbourhood
+    //query 23 helper method
+    public String monthMapper(int month) {
+
+        switch (month) {
+            case 1:
+                return "January";
+            case 2:
+                return "February";
+            case 3:
+                return "March";
+            case 4:
+                return "April";
+            case 5:
+                return "May";
+            case 6:
+                return "June";
+            case 7:
+                return "July";
+            case 8:
+                return "August";
+            case 9:
+                return "September";
+            case 10:
+                return "October";
+            case 11:
+                return "November";
+            case 12:
+                return "December";
+            default:
+                return "Invalid month";
+        }
+    }
+    
+    // 24. Most expensive property type in each neighbourhood
     public void propertyTypePricesByNeighbourhood() {
         String sql = """
-                SELECT 
-                    n.neighbourhood_name,
+                SELECT DISTINCT TOP 10
                     l.property_type,
                     AVG(l.price) AS avg_price
                 FROM listings l
                 JOIN neighbourhoods n ON l.neighbourhood_id = n.neighbourhood_id
-                GROUP BY n.neighbourhood_name, l.property_type
-                ORDER BY n.neighbourhood_name, avg_price DESC;
+                GROUP BY l.property_type
+                ORDER BY avg_price DESC;
                 """;
 
         try (PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             
-            System.out.println("Most Expensive Property Types by Neighbourhood:");
-            System.out.printf("%-25s %-30s %-15s%n", 
-                "Neighbourhood", "Property Type", "Avg Price");
+            System.out.println("Most Expensive Property Types:");
+            System.out.printf("%-30s %-15s%n", 
+                 "Property Type", "Avg Price");
             System.out.println("-----------------------------------------------------------------");
             
             while (resultSet.next()) {
-                System.out.printf("%-25s %-30s $%-14.2f%n",
-                    resultSet.getString("neighbourhood_name"),
+                System.out.printf("%-30s $%-14.2f%n",
                     resultSet.getString("property_type"),
                     resultSet.getDouble("avg_price"));
             }
@@ -1197,7 +1209,7 @@ public void showAttractionsWithSafetySummary() {
                 SELECT TOP (?)
                     l.property_type,
                     COUNT(*) AS total_bookings
-                FROM guests_book_listings gbl
+                FROM guest_book_listings gbl
                 JOIN listings l 
                     ON gbl.listing_id = l.listing_id
                 GROUP BY l.property_type
@@ -1287,8 +1299,8 @@ public void showAttractionsWithSafetySummary() {
         }
     }
 
-    // NEW METHOD: For DatabaseInterface neighbourhood category option 5
-    // NEW METHOD: For DatabaseInterface neighbourhood category option 5
+    
+    //For DatabaseInterface neighbourhood category option 5
 public void getTopListingReviews(String neighbourhoodName) {
     // Using COUNT to get the number of reviews instead of assuming a column exists
     String sql = """
