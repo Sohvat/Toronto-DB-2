@@ -3,6 +3,18 @@ import java.util.List;
 import java.util.Arrays;
 
 public class DatabaseInterface {
+    public static final String RESET = "\u001B[0m";
+    public static final String BOLD = "\u001B[1m";
+    public static final String UNDERLINE = "\u001B[4m";
+
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String MAGENTA = "\u001B[35m";
+    public static final String CYAN = "\u001B[36m";
+    public static final String WHITE = "\u001B[37m";
+
     static TorontoDatabase db = new TorontoDatabase();
     static Populate po = new Populate();
     static Scanner mainScanner = new Scanner(System.in);
@@ -10,24 +22,21 @@ public class DatabaseInterface {
     public static void main(String[] args) {
         System.out.println(" ");
         System.err.println(" ");
-        System.out.println("Welcome to the City of Toronto Database!");
-        System.out.println("Explore Toronto Data: Neighbourhoods, Crime, Airbnb & Attractions");
-        System.out.println("---------------------------------------------------------------");
+        System.out.println(BOLD + MAGENTA +"WELCOME TO THE CITY OF TORONTO DATABASE!"+ RESET);
+        System.out.println(BOLD + MAGENTA + "Explore Toronto Data: Neighbourhoods, Crime, Airbnb & Attractions"+ RESET);
+        System.out.println(BOLD + MAGENTA +"---------------------------------------------------------------"+ RESET);
 
         while (true) {
-            System.out.print("\nOptions: \n [h] for help ie display main menu, \n [q] to quit, \n [r] to delete and repopulate ");
-            System.out.print("\n User Input: ");
+            System.out.print(BLUE + "\nOptions: \n [h] for help ie display main menu, \n [q] to quit, \n [r] to delete and repopulate " + RESET);
+            System.out.print(BLUE + "\n User Input: " + RESET);
             String input = mainScanner.nextLine().trim();
 
             if (input.equalsIgnoreCase("q")) {
-                System.out.println("Exiting the City of Toronto Database. Goodbye!");
+                System.out.println(GREEN + "Exiting the City of Toronto Database. Goodbye!" + RESET);
                 break;
             
             } else if (input.equalsIgnoreCase("h") || input.equalsIgnoreCase("help")) {
                 displayMainMenu();
-            
-            } else if (input.equalsIgnoreCase("d")) {
-                deployDatabase();
             
             } else if (input.equalsIgnoreCase("r")) {
                 reloadData();
@@ -48,39 +57,38 @@ public class DatabaseInterface {
                 runCrossAnalysisCategory();
             
             } else {
-                System.out.println("Invalid option. Type 'h' for menu.");
+                System.out.println(RED + "Invalid option. Type 'h' for menu." + RESET);
             }
         }
        
     }
 
     private static void displayMainMenu() {
-        System.out.println("\n" + "=".repeat(50));
-        System.out.println("THE CITY OF TORONTO - MAIN MENU");
-        System.out.println("=".repeat(50));
-        System.out.println("1. Explore Neighbourhoods");
-        System.out.println("2. Safety & Crime Insights");
-        System.out.println("3. Airbnb Market Analysis");
-        System.out.println("4. Tourism & Attractions");
-        System.out.println("5. Cross-Analysis Reports");
+        System.out.println(CYAN + "\n" + "=".repeat(50) + RESET);
+        System.out.println(CYAN + "THE CITY OF TORONTO - MAIN MENU" + RESET);
+        System.out.println(CYAN + "=".repeat(50) + RESET);
+        System.out.println(CYAN + "1. Explore Neighbourhoods" + RESET);
+        System.out.println(CYAN + "2. Safety & Crime Insights" + RESET);
+        System.out.println(CYAN + "3. Airbnb Market Analysis" + RESET);
+        System.out.println(CYAN + "4. Tourism & Attractions" + RESET);
+        System.out.println(CYAN + "5. Cross-Analysis Reports" + RESET);
         System.out.println();
-        System.out.println("=".repeat(50));
+        System.out.println(CYAN + "\n" + "=".repeat(50) + RESET);
     }
 
-    // NEW METHOD: Neighbourhood selection system - FIXED VERSION
 private static String selectNeighbourhood() {
     Scanner localScanner = new Scanner(System.in);
     
-    System.out.println("\n--- SELECT NEIGHBOURHOOD REGION ---");
-    System.out.println("1. Downtown Core");
-    System.out.println("2. West End");
-    System.out.println("3. East End");
-    System.out.println("4. North York");
-    System.out.println("5. Etobicoke");
-    System.out.println("6. Scarborough");
-    System.out.println("7. Central/Midtown");
-    System.out.println("0. Cancel");
-    System.out.print("Choose region (1-7, 0 to cancel): ");
+    System.out.println(CYAN + "\n--- SELECT NEIGHBOURHOOD REGION ---" + RESET);
+    System.out.println(CYAN + "1. Downtown Core" + RESET);
+    System.out.println(CYAN + "2. West End" + RESET);
+    System.out.println(CYAN + "3. East End" + RESET);
+    System.out.println(CYAN + "4. North York" + RESET);
+    System.out.println(CYAN + "5. Etobicoke" + RESET);
+    System.out.println(CYAN + "6. Scarborough" + RESET);
+    System.out.println(CYAN + "7. Central/Midtown" + RESET);
+    System.out.println(CYAN + "0. Cancel" + RESET);
+    System.out.print(MAGENTA + "Choose region (1-7, 0 to cancel): " + RESET);
     
     String regionChoice = localScanner.nextLine().trim();
     if (regionChoice.equals("0")) return null;
@@ -88,39 +96,38 @@ private static String selectNeighbourhood() {
     List<String> neighbourhoods = getNeighbourhoodsByRegion(regionChoice);
     
     if (neighbourhoods == null || neighbourhoods.isEmpty()) {
-        System.out.println("No neighbourhoods found for this region.");
+        System.out.println(RED + "No neighbourhoods found for this region." + RESET);
         return null;
     }
     
-    System.out.println("\n--- NEIGHBOURHOODS IN SELECTED REGION ---");
-    // Display with proper numbering
+    System.out.println(MAGENTA + "\n--- NEIGHBOURHOODS IN SELECTED REGION ---" + RESET);
+    
     for (int i = 0; i < neighbourhoods.size(); i++) {
-        System.out.printf("%2d. %s\n", (i+1), neighbourhoods.get(i));
+        System.out.printf(CYAN + "%2d. %s\n" + RESET, (i+1), neighbourhoods.get(i));
     }
-    System.out.println(" 0. Go back to region selection");
-    System.out.print("\nSelect neighbourhood number: ");
+    System.out.println(CYAN + " 0. Go back to region selection" + RESET);
+    System.out.print(BLUE + "\nSelect neighbourhood number: " + RESET);
     
     try {
         int hoodChoice = Integer.parseInt(localScanner.nextLine().trim());
         
         if (hoodChoice == 0) {
-            return selectNeighbourhood(); // Recursive call to go back
+            return selectNeighbourhood();
         }
         
         if (hoodChoice >= 1 && hoodChoice <= neighbourhoods.size()) {
             String selectedNeighbourhood = neighbourhoods.get(hoodChoice - 1);
-            System.out.println("Selected: " + selectedNeighbourhood);
+            System.out.println(GREEN + "Selected: " + selectedNeighbourhood + RESET);
             return selectedNeighbourhood;
         } else {
-            System.out.println("Invalid selection. Please try again.");
+            System.out.println(RED + "Invalid selection. Please try again." + RESET);
             return selectNeighbourhood();
         }
     } catch (NumberFormatException e) {
-        System.out.println("Please enter a valid number.");
+        System.out.println(RED + "Please enter a valid number." + RESET);
         return selectNeighbourhood();
     }
 }
-
     // Helper method to get neighbourhoods by region
     private static List<String> getNeighbourhoodsByRegion(String regionCode) {
         switch (regionCode) {
@@ -201,14 +208,14 @@ private static String selectNeighbourhood() {
         boolean stayInCategory = true;
         
             while (stayInCategory) {
-                System.out.println("\n--- NEIGHBOURHOOD EXPLORER ---");
-                System.out.println("1. Crime reports in area");
-                System.out.println("2. Browse local listings");
-                System.out.println("3. Price-ranked rentals");
-                System.out.println("4. Rental density by area");
-                System.out.println("5. Top listing reviews");
-                System.out.println("0. Back to main menu");
-                System.out.print("Choice (1-5, 0 to exit): ");
+                System.out.println(CYAN + "\n--- NEIGHBOURHOOD EXPLORER ---" + RESET);
+                System.out.println(CYAN + "1. Crime reports in area" + RESET);
+                System.out.println(CYAN + "2. Browse local listings" + RESET);
+                System.out.println(CYAN + "3. Price-ranked rentals" + RESET);
+                System.out.println(CYAN + "4. Rental density by area" + RESET);
+                System.out.println(CYAN + "5. Top listing reviews" + RESET);
+                System.out.println(CYAN + "0. Back to main menu" + RESET);
+                System.out.print(MAGENTA + "Choice (1-5, 0 to exit): " + RESET);
                 
                 String choice = localScanner.nextLine().trim();
     
@@ -224,44 +231,59 @@ private static String selectNeighbourhood() {
                         String neighbourhood1 = selectNeighbourhood();
 
                         if (neighbourhood1 != null) {
-                            System.out.println("\n \n Fetching requested info....\n \n");
-                            db.showCrimesInNeighbourhood(neighbourhood1);
+                            System.out.print(BLUE + "Please enter the number of rows to display: " + RESET);
+                            try {
+                                int limit = Integer.parseInt(localScanner.nextLine().trim());
+                                System.out.println(GREEN + BOLD+  "\n \n Fetching requested info....\n \n" + RESET);
+                                db.showCrimesInNeighbourhood(neighbourhood1, limit);
+        
+                            } catch (NumberFormatException e) {
+                                System.out.println(RED + "Please enter a valid number" + RESET);
+                            }        
                         }
                         break;
                         
                     case "2":
                         String neighbourhood2 = selectNeighbourhood();
                         if (neighbourhood2 != null) {
-                            System.out.println("\n \n Fetching requested info....\n \n");
-                            db.browseLocalListings(neighbourhood2);
+                            System.out.print(BLUE + "Please enter the number of rows to display: " + RESET);
+                            try {
+                                int limit = Integer.parseInt(localScanner.nextLine().trim());
+                                System.out.println(GREEN + BOLD+  "\n \n Fetching requested info....\n \n" + RESET);
+                                db.browseLocalListings(neighbourhood2, limit);
+        
+                            } catch (NumberFormatException e) {
+                                System.out.println(RED + "Please enter a valid number" + RESET);
+                            } 
                         }
                         break;
                         
                     case "3":
                         String neighbourhood3 = selectNeighbourhood();
                         if (neighbourhood3 != null) {
-                            System.out.print("Sort (high/low): ");
+                            System.out.print(BLUE + "Sort (high/low): " + RESET);
                             String order = localScanner.nextLine().trim();
-                            System.out.println("\n \nFetching requested info....\n \n");
+                            System.out.println(GREEN + "\n \nFetching requested info....\n \n" + RESET);
                             db.rankListingsByPrice(neighbourhood3, order);;
                         }
                         break;
                         
                     case "4":
-                        System.out.println("\n \n Fetching requested info....\n \n");
+                        System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                         db.countListingsPerNeighbourhood();
                         break;
                         
                     case "5":
                         String neighbourhood5 = selectNeighbourhood();
                         if (neighbourhood5 != null) {
-                            System.out.println("\n \n Fetching requested info....\n \n");
-                            db.getTopListingReviews(neighbourhood5);;
+                            System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
+                            db.topRatedListings(neighbourhood5);
                         }
                         break;
                         
                     default:
-                        System.out.println("Invalid choice.");
+                        //always default here
+                        System.out.println(RED + "Invalid choice." + RESET);
                 }
             }
         
@@ -272,69 +294,61 @@ private static String selectNeighbourhood() {
         boolean stayInCategory = true;
         
         while (stayInCategory) {
-            System.out.println("\n--- CRIME & SAFETY DASHBOARD ---");
-            System.out.println("1. High-crime areas");
-            System.out.println("2. Police station coverage");
-            System.out.println("3. Crime vs tourism analysis");
-            System.out.println("4. Attraction safety check");
-            System.out.println("5. Repeat offender tracking");
-            System.out.println("6. Criminal Category committing most crimes");
-            System.out.println("7. Active criminals in neighbourhoods with attractions");
-            System.out.println("0. Back to main menu");
-            System.out.print("Choice (1-5, 0 to exit): ");
-            
+            System.out.println(MAGENTA + "\n--- CRIME & SAFETY DASHBOARD ---" + RESET);
+            System.out.println(CYAN + "1. High-crime areas" + RESET);
+            System.out.println(CYAN + "2. Police station coverage" + RESET);
+            System.out.println(CYAN + "3. Crime vs tourism analysis" + RESET);
+            System.out.println(CYAN + "4. Attraction safety check" + RESET);
+            System.out.println(CYAN + "5. Repeat offender tracking" + RESET);
+            System.out.println(CYAN + "6. Criminal Category committing most crimes" + RESET);
+            System.out.println(CYAN + "7. Active criminals in neighbourhoods with attractions" + RESET);
+            System.out.println(CYAN + "0. Back to main menu" + RESET);
+            System.out.print(BLUE + "Choice (1-7, 0 to exit): " + RESET);
             String choice = localScanner.nextLine().trim();
             
             switch (choice) {
                 case "1":
-                    // Query 5: Top N neighborhoods with most crimes
-                    System.out.print("Please enter the number of rows to display: ");
+                    System.out.print(BLUE + "Please enter the number of rows to display: " + RESET);
                     try {
                         int limit = Integer.parseInt(localScanner.nextLine().trim());
-                        System.out.println("\n \n Fetching requested info....\n \n");
+                        System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                         db.getHighCrimeNeighbourhoods(limit);
 
                     } catch (NumberFormatException e) {
-                        System.out.println("Please enter a valid number");
+                        System.out.println(RED + "Please enter a valid number" + RESET);
                     }
                     break;
                     
                 case "2":
-                    // Query 7: Crime handled per police station
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.getPoliceStationCoverage();
                     break;
                     
                 case "3":
-                    // Query 9: Crime rate vs. Airbnb listings analysis
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.analyzeCrimeVsTourism();
                     break;
                     
                 case "4":
-                    // Query 10: Attractions vs. crime comparisons - needs attraction name
-                    System.out.println("\n \n Fetching requested info....\n \n");
 					db.displayAllAttractions();
-                    System.out.print("Enter attraction name: ");
+                    System.out.print(BLUE + "Enter attraction name: " + RESET);
                     String attraction = localScanner.nextLine().trim();
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.checkAttractionSafety(attraction);
                     break;
                     
                 case "5":
-                    // Query 13: Repeat offenders vs attractions
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.trackRepeatOffenders();
                     break;
                 
                 case "6":
-                    // Query 21: Criminal category committing most crimes
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.criminalCategoryAnalysis();
                     break;
 
                 case "7":
-                    // Query 22: Active criminals in neighbourhoods with attractions 
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.criminalsNearAttractions();
                     break;
                     
@@ -344,7 +358,7 @@ private static String selectNeighbourhood() {
                     break;
                     
                 default:
-                    System.out.println("Invalid choice.");
+                    System.out.println(RED + "Invalid choice." + RESET);
             }
         }
       
@@ -355,94 +369,65 @@ private static String selectNeighbourhood() {
         boolean stayInCategory = true;
         
         while (stayInCategory) {
-            System.out.println("\n--- AIRBNB MARKET ANALYTICS ---");
-            System.out.println("1. Placeholder for some other query");
-            System.out.println("2. Amenity-Booking Analysis");
-            System.out.println("3. Amenity-pricing impact");
-            System.out.println("4. Host-guest overlap");
-            System.out.println("5. Review-Booking analysis");
-            System.out.println("6. Unbooked Listings");
-            System.out.println("7. Busiest Booking months");
-            System.out.println("8. Most booked property type");
-            System.out.println("9. Most expensive property type");
-            System.out.println("10. Cheapest V/s Most expensive listing type");
-            System.out.println("0. Back to main menu");
-            System.out.print("Choice (1-5, 0 to exit): ");
+            System.out.println(MAGENTA + "\n--- AIRBNB MARKET ANALYTICS ---" + RESET);
+            System.out.println(CYAN + "1. Amenity-Booking Analysis" + RESET);
+            System.out.println(CYAN + "2. Amenity-pricing impact" + RESET);
+            System.out.println(CYAN + "3. Host-guest overlap" + RESET);
+            System.out.println(CYAN + "4. Review-Booking analysis" + RESET);
+            System.out.println(CYAN + "5. Unbooked Listings" + RESET);
+            System.out.println(CYAN + "6. Busiest Booking months" + RESET);
+            System.out.println(CYAN + "7. Most booked property type" + RESET);
+            System.out.println(CYAN + "8. Most expensive property type" + RESET);
+            System.out.println(CYAN + "9. Cheapest V/s Most expensive listing type" + RESET);
+            System.out.println(CYAN + "0. Back to main menu" + RESET);
+            System.out.print(BLUE + "Choice (1-9, 0 to exit): " + RESET);
             
             String choice = localScanner.nextLine().trim();
             
             switch (choice) {
-                case "1":
-                    // Query 2: List all associated amenities for a specific Airbnb listing
-                    // System.out.print("Enter listing ID: ");
-                    // System.out.println("\n \n Fetching requested info....\n \n");
-                    // try {
-                    //     int id = Integer.parseInt(localScanner.nextLine().trim());
-                    //     db.getListingAmenities(id);
-                    // } catch (NumberFormatException e) {
-                    //     System.out.println("Please enter a valid ID");
-                    // }
-                    break;
                     
-                case "2":
-                    // Query 14: Amenities vs booking analysis
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                case "1":
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.analyzeAmenityPopularity();
                     break;
                     
-                case "3":
-                    //// Query 15: Amenities vs pricing analysis
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                case "2":
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.analyzeAmenityPricing();
                     break;
                     
-                case "4":
-                    // Query 16: Host who are also guests
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                case "3":
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.findHostGuestOverlap();
                     break;
                     
-                case "5":
-                    // Query 17: Reviews vs. booking analysis
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                case "4":
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.analyzeReviewImpact();
                     break;
 
-                case "6":
-                    // Query 18:Unbooked listings
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                case "5":
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.unbookedListings();
                     break;
                     
-                case "7":
-                    // Query 23: Busiest Booking month
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                case "6":
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.busiestBookingMonth();
                     break;
                     
-                case "8":
-                    // Query 24: most expensive property type
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                case "7":
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.propertyTypePricesByNeighbourhood();
                     break;
                     
-                case "9":
-                    /// Query 25: most booked property type
-                    System.out.print("\nEnter how many would you like to see: ");
-                    try {
-                        int limit = Integer.parseInt(localScanner.nextLine().trim());
-                        System.out.println("\n \n Fetching requested info....\n \n");
-                        db.mostBookedPropertyTypes(limit);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Please enter a valid ID");
-                    }
-                    System.out.println("\n \n Fetching requested info....\n \n");
-                   
+                case "8":
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
+                    db.mostBookedPropertyTypes();
                     break;
                     
-                case "10":
-                    // Query 26: Price range by property type
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                case "9":
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.priceRangeByPropertyType();
                     break;
                     
@@ -452,42 +437,44 @@ private static String selectNeighbourhood() {
                     break;
                     
                 default:
-                    System.out.println("Invalid choice.");
+                    System.out.println(RED + "Invalid choice." + RESET);
             }
         }
         
     }
-
     private static void runTourismCategory() {
         Scanner localScanner = new Scanner(System.in);
         boolean stayInCategory = true;
         
         while (stayInCategory) {
-            System.out.println("\n--- TOURISM & VISITOR INSIGHTS ---");
-            System.out.println("1. Guest attraction patterns");
-            System.out.println("2. Attraction price influence");
-            System.out.println("3. Most visited spots");
-            System.out.println("0. Back to main menu");
-            System.out.print("Choice (1-3, 0 to exit): ");
+            System.out.println(MAGENTA + "\n--- TOURISM & VISITOR INSIGHTS ---" + RESET);
+            System.out.println(CYAN + "1. Guest attraction patterns" + RESET);
+            System.out.println(CYAN + "2. Attraction price influence" + RESET);
+            System.out.println(CYAN + "3. Most visited spots" + RESET);
+            System.out.println(CYAN + "0. Back to main menu" + RESET);
+            System.out.print(BLUE + "Choice (1-3, 0 to exit): " + RESET);
             
             String choice = localScanner.nextLine().trim();
             
             switch (choice) {
                 case "1":
-                    // Query 8: Guests with both Airbnb & attraction visits
-                    System.out.println("\n \n Fetching requested info....\n \n");
-                    db.trackGuestAttractionActivity();
+                    System.out.print(BLUE + "\nEnter how many rows would you like to see: " + RESET);
+                    try {
+                        int limit = Integer.parseInt(localScanner.nextLine().trim());
+                        System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
+                        db.trackGuestAttractionActivity(limit);
+                    } catch (NumberFormatException e) {
+                        System.out.println(RED + "Please enter a valid number" + RESET);
+                    }
                     break;
                     
                 case "2":
-                    // Query 11: Attractions vs. Airbnb prices
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.analyzeAttractionImpactOnPrices();
                     break;
                     
                 case "3":
-                    // Query 20: Most visited attractions by guests
-                    System.out.println("\n \n Fetching requested info....\n \n");
+                    System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                     db.findMostVisitedAttractions();
                     break;
                     
@@ -497,7 +484,7 @@ private static String selectNeighbourhood() {
                     break;
                     
                 default:
-                    System.out.println("Invalid choice.");
+                    System.out.println(RED + "Invalid choice." + RESET);
             }
         }
         
@@ -508,22 +495,21 @@ private static String selectNeighbourhood() {
         boolean stayInCategory = true;
         
         while (stayInCategory) {
-            System.out.println("\n--- CROSS-DOMAIN ANALYSIS ---");
-            System.out.println("1. Comprehensive safety profiles");
-            System.out.println("0. Back to main menu");
-            System.out.print("Choice (1 or 0): ");
+            System.out.println(MAGENTA + "\n--- CROSS-DOMAIN ANALYSIS ---" + RESET);
+            System.out.println(CYAN + "1. Comprehensive safety profiles" + RESET);
+            System.out.println(CYAN + "0. Back to main menu" + RESET);
+            System.out.print(BLUE + "Choice (1 or 0): " + RESET);
             
             String choice = localScanner.nextLine().trim();
             
             if (choice.equals("1")) {
-                /// Query 12: Crime, attractions, and police stations analysis
-                System.out.println("\n \n Fetching requested info....\n \n");
+                System.out.println(GREEN + "\n \n Fetching requested info....\n \n" + RESET);
                 db.generateAreaSafetyProfiles();
             } else if (choice.equals("0")) {
                 stayInCategory = false;
                 displayMainMenu();
             } else {
-                System.out.println("Invalid choice.");
+                System.out.println(RED + "Invalid choice." + RESET);
             }
         }
         
@@ -531,22 +517,23 @@ private static String selectNeighbourhood() {
 
     private static void deployDatabase() {
         try {
-            // Execute SQL files sequentially
-            System.out.println("Creating Toronto database tables...");
-            //// Add your actual SQL file execution here
-            System.out.println("Database deployment completed.");
+            System.out.println(YELLOW + "Deleting Toronto database tables..." + RESET);
+            System.out.println(GREEN + "Creating Toronto database tables..." + RESET);
+            db.executeSqlFile("toronto_db.sql");
+            System.out.println(GREEN + "Database deployment completed." + RESET);
         } catch (Exception e) {
-            System.out.println("Deployment error: " + e.getMessage());
+            System.out.println(RED + "Deployment error: " + e.getMessage() + RESET);
         }
     }
 
     private static void reloadData() {
+        deployDatabase();
         try {
-            System.out.println("Loading data...");
-            ///// po.loadConfigAndPopulate();
-            System.out.println("Data reload completed.");
+            System.out.println(GREEN + "Loading data..." + RESET);
+            System.out.println(GREEN + "Data reload completed." + RESET);
+            po.loadConfigAndPopulate();
         } catch (Exception e) {
-            System.out.println("Data loading error: " + e.getMessage());
+            System.out.println(RED + "Data loading error: " + e.getMessage() + RESET);
         }
     }
    

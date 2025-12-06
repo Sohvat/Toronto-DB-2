@@ -6,6 +6,19 @@ import java.sql.*;
 import java.util.Properties;
 
 public class Populate {
+    public static final String BOLD = "\u001B[1m";
+    public static final String UNDERLINE = "\u001B[4m";
+    public static final String RESET = "\u001B[0m";
+
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String MAGENTA = "\u001B[35m";
+    public static final String CYAN = "\u001B[36m";
+    public static final String WHITE = "\u001B[37m";
+
+    
     private String connectionUrl;
     private static final int BATCH_SIZE = 1000;
 
@@ -19,7 +32,7 @@ public class Populate {
         try (FileInputStream configFile = new FileInputStream("auth.cfg")) {
             prop.load(configFile);
         } catch (IOException ex) {
-            System.out.println("Error reading config file.");
+            System.out.println(RED + BOLD + "Error reading config file." + RESET);
             System.exit(1);
         }
 
@@ -29,7 +42,7 @@ public class Populate {
                 + "database=cs3380;user=" + username + ";password=" + password
                 + ";encrypt=false;trustServerCertificate=false;loginTimeout=30;";
 
-        System.out.println("Starting database population...\n");
+        System.out.println(GREEN+ BOLD+ "Starting database population...\n"+ RESET);
 
        // Populate tables in optimal order
         executeSQL("neighbourhoods", "sql_files/neighbourhoods.sql");
@@ -46,11 +59,11 @@ public class Populate {
         executeSQL("guest_visit_attractions", "sql_files/guest_visit_attractions.sql");
         executeSQL("guest_book_listings", "sql_files/guest_book_listings.sql");
 
-        System.out.println("\n Database population completed!");
+        System.out.println(GREEN+ BOLD+"\n Database population completed!"+ RESET);
     }
 
     private void executeSQL(String tableName, String sqlFile) {
-        System.out.println("Processing " + tableName + " from " + sqlFile + "...");
+        System.out.println(YELLOW + "Processing " + tableName + " from " + sqlFile + "..."+ RESET);
         
         long startTime = System.currentTimeMillis();
         int totalRows = 0;
@@ -96,12 +109,12 @@ public class Populate {
                                 statement.clearBatch();
                                 batchCount = 0;
                                 connection.commit();
-                                
-                                System.out.printf(" Batch executed: %,d rows total%n", totalRows);
+                    
+                                System.out.printf(GREEN + BOLD+ " Batch executed: %,d rows total%n", totalRows + RESET);
                             }
                         } catch (SQLException e) {
                             errorCount++;
-                            System.err.printf("Bad SQL (row %,d): %s%n", totalRows, e.getMessage());
+                            System.err.printf(RED + BOLD+ "Bad SQL (row %,d): %s%n", totalRows, e.getMessage() + RESET);
                             // Clear the failed batch and continue
                             statement.clearBatch();
                             batchCount = 0;
@@ -120,21 +133,16 @@ public class Populate {
                 try {
                     statement.executeBatch();
                     connection.commit();
-                    System.out.printf("Final batch: %,d rows total%n", totalRows);
+                    System.out.printf(GREEN+ BOLD+ "Final batch: %,d rows total%n", totalRows+ RESET);
                 } catch (SQLException e) {
-                    System.err.println("Final batch failed: " + e.getMessage());
+                    //System.err.println("Final batch failed: " + e.getMessage());
                     connection.rollback();
                 }
             }
-            
-            long endTime = System.currentTimeMillis();
-            double seconds = (endTime - startTime) / 1000.0;
-            
-            System.out.printf("%s: %,d rows, %,d errors, %.2f seconds (%.1f rows/sec)%n", 
-                tableName, totalRows, errorCount, seconds, totalRows / seconds);
+        
                 
         } catch (Exception e) {
-            System.err.println("Fatal error in " + tableName + ": " + e.getMessage());
+            System.err.println(RED+ BOLD + "Fatal error in " + tableName + ": " + e.getMessage()+ RESET);
             e.printStackTrace();
         }
     }
