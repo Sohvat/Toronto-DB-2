@@ -518,9 +518,9 @@ private static String selectNeighbourhood() {
     private static void deployDatabase() {
         try {
             System.out.println(YELLOW + "Deleting Toronto database tables..." + RESET);
-            System.out.println(GREEN + "Creating Toronto database tables..." + RESET);
+            System.out.println(YELLOW + "Creating Toronto database tables..." + RESET);
             db.executeSqlFile("toronto_db.sql");
-            System.out.println(GREEN + "Database deployment completed." + RESET);
+          //  System.out.println(GREEN + "Database deployment completed." + RESET);
         } catch (Exception e) {
             System.out.println(RED + "Deployment error: " + e.getMessage() + RESET);
         }
@@ -529,9 +529,11 @@ private static String selectNeighbourhood() {
     private static void reloadData() {
         deployDatabase();
         try {
-            System.out.println(GREEN + "Loading data..." + RESET);
-            System.out.println(GREEN + "Data reload completed." + RESET);
+          //  System.out.println(GREEN + "Loading data..." + RESET);
+          //  System.out.println(GREEN + "Data reload completed." + RESET);
+           System.out.println(MAGENTA + BOLD + "Just a heads-up: this might take a while, so hang in there!" + RESET);
             po.loadConfigAndPopulate();
+            displayMainMenu();
         } catch (Exception e) {
             System.out.println(RED + "Data loading error: " + e.getMessage() + RESET);
         }

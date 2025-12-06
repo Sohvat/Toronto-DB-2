@@ -110,11 +110,11 @@ public class Populate {
                                 batchCount = 0;
                                 connection.commit();
                     
-                                System.out.printf(GREEN + BOLD+ " Batch executed: %,d rows total%n", totalRows + RESET);
+                                System.out.printf(GREEN + BOLD+ " Batch executed: %,d rows total%n" + RESET, totalRows );
                             }
                         } catch (SQLException e) {
                             errorCount++;
-                            System.err.printf(RED + BOLD+ "Bad SQL (row %,d): %s%n", totalRows, e.getMessage() + RESET);
+                            // System.err.printf(RED + BOLD+ "Bad SQL (row %,d): %s%n", totalRows, e.getMessage() + RESET);
                             // Clear the failed batch and continue
                             statement.clearBatch();
                             batchCount = 0;
@@ -133,7 +133,7 @@ public class Populate {
                 try {
                     statement.executeBatch();
                     connection.commit();
-                    System.out.printf(GREEN+ BOLD+ "Final batch: %,d rows total%n", totalRows+ RESET);
+                    System.out.printf(GREEN+ BOLD+ "Final batch: %,d rows total%n" + RESET, totalRows);
                 } catch (SQLException e) {
                     //System.err.println("Final batch failed: " + e.getMessage());
                     connection.rollback();
