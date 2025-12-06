@@ -114,7 +114,7 @@ public class Populate {
                             }
                         } catch (SQLException e) {
                             errorCount++;
-                            // System.err.printf(RED + BOLD+ "Bad SQL (row %,d): %s%n", totalRows, e.getMessage() + RESET);
+                            System.out.println(MAGENTA + BOLD + "Just a heads-up: this might take a while, so hang in there!" + RESET);
                             // Clear the failed batch and continue
                             statement.clearBatch();
                             batchCount = 0;
