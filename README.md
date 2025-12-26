@@ -100,7 +100,7 @@ This screenshot demonstrates pagination for queries that return a large number o
 
 ### SQL Injection Protection
 
-![SQL Injection Protection](Screenshots_interface/injection.png)
+![SQL Injection Protection](Screenshots_interface/Injection.png)
 
 This screenshot demonstrates that the application is robust against SQL injection attempts. User input is not executed as raw SQL. Instead, the interface uses parameterized queries through Java PreparedStatements, so malicious input is treated as plain text and does not alter the intended query.
 
